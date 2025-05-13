@@ -1,0 +1,19 @@
+{
+  "name": "initmaster",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "artartur",
+  "license": "ISC",
+  "description": "",
+  "type": "module",
+  "bin": {
+    "initMaster": "./index.js"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "enquirer": "^2.4.1"
+  }
+}
