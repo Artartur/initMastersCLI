@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
 import 'colors';
+import { clearProject } from './commands/clear.js';
+
 import { execSync, spawnSync } from 'child_process';
+import path from 'path';
 import process from 'process';
 import pkg from 'enquirer';
-
 const { Select } = pkg;
 
 async function createProject(projectName) {
@@ -15,11 +17,22 @@ async function createProject(projectName) {
     console.log("We're installing for you now...\n".green.bold);
 
     spawnSync('npm', ['install', '-g', '@angular/cli'], { 'stdio': 'inherit' });
-    console.log(`Creating your new project called: ${projectName}`.green.bold, '... \n');
+    console.log(`\nCreating your new project called: ${projectName}`.green.bold, '... \n'.green.bold);
     spawnSync('ng', ['new', projectName, structureOption, '--style', 'css', '--ssr', false], { 'stdio': 'inherit', 'shell': true });
+
+    path.join(process.cwd(), projectName);
+    console.log(`\nInstalling dependencies in ${projectName} directory...`.green.bold);
+    spawnSync('npm', ['install'], { stdio: 'inherit', shell: true });
+
+    clearProject(projectName);
   } else {
-    console.log(`Creating your new project called: ${projectName}`.green.bold, '... \n')
+    console.log(`Creating your new project called: ${projectName}`.green.bold, '... \n'.green.bold)
     spawnSync('ng', ['new', projectName, structureOption, '--style', 'css', '--ssr', false], { 'stdio': 'inherit', 'shell': true });
+    path.join(process.cwd(), projectName);
+    console.log(`\nInstalling dependencies in ${projectName} directory...`.green.bold);
+    spawnSync('npm', ['install'], { stdio: 'inherit', shell: true });
+
+    clearProject(projectName);
   }
 }
 
@@ -32,14 +45,14 @@ function isNgInstalled() {
   }
 }
 
-async function selectStructure() {
+function selectStructure() {
   const prompt = new Select({
     name: 'structure',
     message: 'Before we create the project, do you have any structural preferences? ',
     choices: ['module', 'standalone']
   })
 
-  return await prompt.run().then(res => res === 'module' ? '--no-standalone' : '');
+  return prompt.run().then(res => res === 'module' ? '--no-standalone' : '');
 }
 
 function showHelp() {
